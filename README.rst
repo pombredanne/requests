@@ -1,132 +1,54 @@
 Requests: HTTP for Humans
 =========================
 
-Most existing Python modules for dealing HTTP requests are insane. I have to look up *everything* that I want to do. Most of my worst Python experiences are a result of the various built-in HTTP libraries (yes, even worse than Logging).
 
-But this one's different. This one's going to be awesome. And simple.
+.. image:: https://secure.travis-ci.org/kennethreitz/requests.png?branch=develop
+        :target: https://secure.travis-ci.org/kennethreitz/requests
 
-Really simple.
+Requests is an ISC Licensed HTTP library, written in Python, for human
+beings.
+
+Most existing Python modules for sending HTTP requests are extremely
+verbose and cumbersome. Python's builtin urllib2 module provides most of
+the HTTP capabilities you should need, but the api is thoroughly broken.
+It requires an enormous amount of work (even method overrides) to
+perform the simplest of tasks.
+
+Things shouldn't be this way. Not in Python.
+
+::
+
+    >>> r = requests.get('https://api.github.com', auth=('user', 'pass'))
+    >>> r.status_code
+    204
+    >>> r.headers['content-type']
+    'application/json'
+    >>> r.text
+    ...
+
+See `the same code, without Requests <https://gist.github.com/973705>`_.
+
+Requests allow you to send HTTP/1.1 requests. You can add headers, form data,
+multipart files, and parameters with simple Python dictionaries, and access the
+response data in the same way. It's powered by httplib and `urllib3
+<https://github.com/shazow/urllib3>`_, but it does all the hard work and crazy
+hacks for you.
+
 
 Features
 --------
 
-- Extremely simple HEAD, GET, POST, PUT, PATCH, DELETE Requests
-    + Simple HTTP Header Request Attachment
-    + Simple Data/Params Request Attachment
-    + Simple Multipart File Uploads
-    + CookieJar Support
-    + Redirection History
-    + Proxy Support
-    + Redirection Recursion Urllib Fix
-    + Auto Decompression of GZipped Content
-    + Unicode URL Support
-
-- Simple Authentication
-    + Simple URL + HTTP Auth Registry
-
-
-Usage
------
-
-It couldn't be simpler. ::
-
-    >>> import requests
-    >>> r = requests.get('http://google.com')
-
-
-HTTPS? Basic Authentication? ::
-
-    >>> r = requests.get('https://httpbin.ep.io/basic-auth/user/pass')
-    >>> r.status_code
-    401
-
-
-Uh oh, we're not authorized! Let's add authentication. ::
-
-    >>> r = requests.get('https://httpbin.ep.io/basic-auth/user/pass', auth=('user', 'pass'))
-
-    >>> r.status_code
-    200
-
-    >>> r.headers['content-type']
-    'application/json'
-
-    >>> r.content
-    '{"authenticated": true, "user": "user"}'
-
-
-
-API
----
-
-**Requests:**
-
-All request functions return a Response object (see below).
-
-If a {filename: fileobject} dictionary is passed in (files=...), a multipart_encode upload will be performed.
-If CookieJar object is is passed in (cookies=...), the cookies will be sent with the request.
-
-  HEAD Requests
-    >>> requests.head(url, params={}, headers={}, cookies=None, auth=None, timeout=None, proxies={})
-    <Response [200]>
-
-  GET Requests
-    >>> requests.get(url, params={}, headers={}, cookies=None, auth=None, timeout=None, proxies={})
-    <Response [200]>
-
-  POST Requests
-    >>> requests.post(url, data={}, headers={}, files={}, cookies=None, auth=None, timeout=None, allow_redirects=False, params{}, proxies={})
-    <Response [200]>
-
-  PUT Requests
-    >>> requests.put(url, data={}, headers={}, files={}, cookies=None, auth=None, timeout=None, allow_redirects=False, params{}, proxies={})
-    <Response [200]>
-
-  PATCH Requests
-    >>> requests.post(url, data={}, headers={}, files={}, cookies=None, auth=None, timeout=None, allow_redirects=False, params{}, proxies={})
-    <Response [200]>
-
-  DELETE Requests
-    >>> requests.delete(url, params={}, headers={}, cookies=None, auth=None, timeout=None, allow_redirects=False, params{}, proxies={})
-    <Response [200]>
-
-
-**Responses:**
-
-    Response.status_code
-         (Integer) Received HTTP Status Code Response
-
-    Response.headers
-        ((CaseInsensitive) Dictionary) Received HTTP Response Headers.
-
-    Response.content
-        (Bytes) Received Content.
-
-    Response.history
-        (List of Responses) Redirection History.
-
-    Response.url
-        (String) URL of response. Useful for detecting redirects.
-
-    Response.ok
-        (Bool) True if no errors occurred during the request, and the status_code is kosher.
-
-    Response.cached
-        (Bool) True if Response.content is stored within the object.
-
-    Response.error
-        (HTTPError) If an HTTPError occurred (e.g. status of 404), Otherwise this is None.
-
-    Response.raise_for_status()
-        Raises HTTPError if a request is not kosher.
-
-
-**HTTP Authentication Registry:**
-
-    You can register AuthObjects to automatically enable HTTP Authentication on requests that contain a registered base URL string.
-
-    >>> requests.auth_manager.add_auth(url, authobject)
-
+- International Domains and URLs
+- Keep-Alive & Connection Pooling
+- Sessions with Cookie Persistence
+- Browser-style SSL Verification
+- Basic/Digest Authentication
+- Elegant Key/Value Cookies
+- Automatic Decompression
+- Unicode Response Bodies
+- Multipart File Uploads
+- Connection Timeouts
+- Thread-safety
 
 
 Installation
@@ -147,14 +69,10 @@ But, you really shouldn't do that.
 Contribute
 ----------
 
-If you'd like to contribute, simply fork `the repository`_, commit your changes to the **develop** branch (or branch off of it), and send a pull request. Make sure you add yourself to AUTHORS_.
-
-
-
-Roadmap
--------
-
-- Sphinx Documentation
+#. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug. There is a Contributor Friendly tag for issues that should be ideal for people who are not very familiar with the codebase yet.
+#. Fork `the repository`_ on Github to start making your changes to the **develop** branch (or branch off of it).
+#. Write a test which shows that the bug was fixed or that the feature works as expected.
+#. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to AUTHORS_.
 
 .. _`the repository`: http://github.com/kennethreitz/requests
-.. _AUTHORS: http://github.com/kennethreitz/requests/blob/master/AUTHORS
+.. _AUTHORS: https://github.com/kennethreitz/requests/blob/develop/AUTHORS.rst

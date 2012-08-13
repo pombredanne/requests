@@ -4,9 +4,10 @@
 requests.structures
 ~~~~~~~~~~~~~~~~~~~
 
-Datastructures that power Requests.
+Data structures that power Requests.
 
 """
+
 
 class CaseInsensitiveDict(dict):
     """Case-insensitive Dictionary
@@ -17,7 +18,7 @@ class CaseInsensitiveDict(dict):
     @property
     def lower_keys(self):
         if not hasattr(self, '_lower_keys') or not self._lower_keys:
-            self._lower_keys = dict((k.lower(), k) for k in self.iterkeys())
+            self._lower_keys = dict((k.lower(), k) for k in list(self.keys()))
         return self._lower_keys
 
     def _clear_lower_keys(self):
@@ -29,7 +30,7 @@ class CaseInsensitiveDict(dict):
         self._clear_lower_keys()
 
     def __delitem__(self, key):
-        dict.__delitem__(self, key)
+        dict.__delitem__(self, self.lower_keys.get(key.lower(), key))
         self._lower_keys.clear()
 
     def __contains__(self, key):
@@ -45,3 +46,21 @@ class CaseInsensitiveDict(dict):
             return self[key]
         else:
             return default
+
+class LookupDict(dict):
+    """Dictionary lookup object."""
+
+    def __init__(self, name=None):
+        self.name = name
+        super(LookupDict, self).__init__()
+
+    def __repr__(self):
+        return '<lookup \'%s\'>' % (self.name)
+
+    def __getitem__(self, key):
+        # We allow fall-through here, so values default to None
+
+        return self.__dict__.get(key, None)
+
+    def get(self, key, default=None):
+        return self.__dict__.get(key, default)
